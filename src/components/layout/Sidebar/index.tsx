@@ -1,115 +1,21 @@
 'use client';
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Popup, { PopupProvider } from '@/components/ui/Popup';
+import { useDirectory, emitCategoryTab } from '@/components/DirectoryProvider';
+import CategoryIcon from '@/components/CategoryIcon';
 import styles from './styles.module.css';
 
-interface NavItem {
-  id: string;
-  name: string;
-  href: string;
-  icon: string;
-  popoverItems?: { name: string; href?: string }[];
-}
-
-const navItems: NavItem[] = [
-  {
-    id: 'video',
-    name: '视频',
-    href: '#video',
-    icon: '📺',
-    popoverItems: [
-      { name: '在线看' },
-      { name: '下载' },
-      { name: '网盘' },
-      { name: 'Android' },
-      { name: 'iOS' },
-      { name: 'TV' },
-      { name: 'PC' },
-      { name: '字幕' },
-      { name: '神器' },
-    ]
-  },
-  {
-    id: 'anime',
-    name: '二次元',
-    href: '#anime',
-    icon: '🎭',
-    popoverItems: [
-      { name: '动漫' },
-      { name: '漫画' },
-      { name: '下载' },
-      { name: '神器' },
-    ]
-  },
-  {
-    id: 'music',
-    name: '音乐',
-    href: '#music',
-    icon: '🎵',
-    popoverItems: [
-      { name: '听歌' },
-      { name: '无损音乐' },
-      { name: '电台' },
-      { name: '曲艺' },
-      { name: 'K歌' },
-    ]
-  },
-  {
-    id: 'reading',
-    name: '阅读',
-    href: '#reading',
-    icon: '📖',
-    popoverItems: [
-      { name: '电子书' },
-      { name: '小说' },
-      { name: '听书' },
-      { name: '报刊杂志' },
-    ]
-  },
-  {
-    id: 'game',
-    name: '游戏',
-    href: '#game',
-    icon: '🎮',
-    popoverItems: [
-      { name: '游戏下载' },
-      { name: '在线小游戏' },
-    ]
-  },
-  {
-    id: 'entertainment',
-    name: '娱乐',
-    href: '#entertainment',
-    icon: '🎬',
-    popoverItems: [
-      { name: '电视直播' },
-      { name: '壁纸' },
-      { name: '育儿学习' },
-    ]
-  },
-  {
-    id: 'toolbox',
-    name: '工具箱',
-    href: '#toolbox',
-    icon: '🔧',
-    popoverItems: [
-      { name: 'AI助手' },
-      { name: '视频' },
-      { name: '音频' },
-      { name: '图片' },
-      { name: '素材&资源' },
-      { name: '办公相关' },
-      { name: '格式转换' },
-      { name: '文件传输' },
-      { name: '实用工具' },
-    ]
-  },
-];
-
 export default function Sidebar() {
-  const [activeId, setActiveId] = useState('video');
+  const { categories, getCategoryTags, loading } = useDirectory();
+  const [activeId, setActiveId] = useState<string>('');
+
+  useEffect(() => {
+    if (activeId === '' && categories.length > 0) {
+      setActiveId(categories[0].slug);
+    }
+  }, [categories, activeId]);
 
   return (
     <PopupProvider>
@@ -124,49 +30,60 @@ export default function Sidebar() {
           </Link>
         </div>
 
-        <nav className="flex-1 overflow-y-auto flex flex-col w-full">
-          {navItems.map((item) => {
-            const trigger = (
-              <Link
-                href={item.href}
-                onClick={() => setActiveId(item.id)}
-                className={`mx-auto w-[56px] h-[52px] flex flex-col items-center justify-center rounded-lg transition-colors ${
-                  activeId === item.id
-                    ? 'bg-gray-100 dark:bg-gray-700 text-blue-500'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-700 dark:hover:text-gray-200'
-                }`}
-              >
-                <span className="text-[20px]">{item.icon}</span>
-                <span className="text-[10px] mt-0.5">{item.name}</span>
-              </Link>
-            );
+        <nav className="flex-1 overflow-y-auto flex flex-col w-full gap-2 py-1">
+          {loading && categories.length === 0 ? (
+            <div className="flex flex-col items-center gap-2 py-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="w-[56px] h-[54px] rounded-lg bg-gray-100 dark:bg-gray-700 animate-pulse"
+                />
+              ))}
+            </div>
+          ) : (
+            categories.map((category) => {
+              const slug = category.slug;
+              const href = `#${slug}`;
+              const trigger = (
+                <Link
+                  href={href}
+                  onClick={() => setActiveId(slug)}
+                  className={`mx-auto w-[56px] h-[54px] flex flex-col items-center justify-center rounded-lg transition-colors ${
+                    activeId === slug
+                      ? 'bg-gray-100 dark:bg-gray-700 text-blue-500'
+                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-700 dark:hover:text-gray-200'
+                  }`}
+                >
+                  <CategoryIcon slug={slug} size={20} background={false} />
+                  <span className="text-[10px] mt-1">{category.title}</span>
+                </Link>
+              );
 
-            const content = (
-              <>
-                {item.popoverItems?.map((popItem, idx) => (
-                  <Link
-                    key={idx}
-                    href={popItem.href || item.href}
-                    className={`block mx-2 my-0.5 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2a2a2a] hover:text-blue-500 dark:hover:text-blue-400 transition-colors ${
-                      popItem.name === '在线看' ? 'bg-gray-100 dark:bg-[#2a2a2a] font-medium text-blue-500 dark:text-blue-400' : ''
-                    }`}
-                  >
-                    {popItem.name}
-                  </Link>
-                ))}
-              </>
-            );
+              const content = (
+                <>
+                  {getCategoryTags(category.id).map((tag) => (
+                    <Link
+                      key={tag.id}
+                      href={href}
+                      onClick={() => {
+                        setActiveId(slug);
+                        emitCategoryTab(slug, tag.tag);
+                      }}
+                      className="block mx-2 my-0.5 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2a2a2a] hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                    >
+                      {tag.tag}
+                    </Link>
+                  ))}
+                </>
+              );
 
-            return (
-              <Fragment key={item.id}>
-                {item.popoverItems && item.popoverItems.length > 0 ? (
-                  <Popup trigger={trigger} content={content} menuId={item.id} />
-                ) : (
-                  trigger
-                )}
-              </Fragment>
-            );
-          })}
+              return (
+                <Fragment key={category.id}>
+                  <Popup trigger={trigger} content={content} menuId={slug} />
+                </Fragment>
+              );
+            })
+          )}
         </nav>
 
         {/* 底部固定部分 */}

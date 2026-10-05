@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Hash } from 'lucide-react';
+import { useDirectory } from '@/components/DirectoryProvider';
 
 interface FilterCategory {
   name: string;
@@ -9,89 +10,85 @@ interface FilterCategory {
   items: { name: string; href: string }[];
 }
 
-const filterCategories: FilterCategory[] = [
-  {
-    name: 'Next标签',
-    description: '你的观看喜好/标签',
-    items: [
-      { name: 'Next推荐', href: '#' },
-      { name: '弹幕多', href: '#' },
-      { name: '4K画质', href: '#' },
-      { name: '高清线路多', href: '#' },
-      { name: '可缓存', href: '#' },
-    ],
-  },
-  {
-    name: '分类',
-    description: '需要哪类的网址/APP',
-    items: [
-      { name: '影视', href: '#video' },
-      { name: '动漫', href: '#anime' },
-      { name: '漫画', href: '#anime' },
-      { name: '音乐', href: '#music' },
-      { name: '电子书', href: '#reading' },
-      { name: '小说', href: '#reading' },
-      { name: '听书', href: '#reading' },
-      { name: '电视直播', href: '#entertainment' },
-      { name: '游戏', href: '#game' },
-      { name: '壁纸', href: '#entertainment' },
-    ],
-  },
-  {
-    name: '系统/设备',
-    description: '在什么设备/系统中使用',
-    items: [
-      { name: 'Android', href: '#' },
-      { name: 'iOS', href: '#' },
-      { name: 'Windows', href: '#' },
-      { name: 'macOS', href: '#' },
-      { name: 'Linux', href: '#' },
-      { name: '浏览器', href: '#' },
-      { name: '电视', href: '#' },
-      { name: '车机', href: '#' },
-    ],
-  },
-  {
-    name: 'APP接口',
-    description: '视频/音乐接口',
-    items: [
-      { name: '影视仓', href: '#' },
-      { name: 'TVbox', href: '#' },
-      { name: 'ZYFun', href: '#' },
-      { name: '洛雪音乐', href: '#' },
-      { name: 'Musicfree', href: '#' },
-      { name: 'IPTV', href: '#' },
-    ],
-  },
-  {
-    name: '下载方式',
-    description: '常用的下载渠道',
-    items: [
-      { name: '直链下载', href: '#' },
-      { name: '迅雷下载', href: '#' },
-      { name: '夸克网盘', href: '#' },
-      { name: '百度网盘', href: '#' },
-      { name: '阿里云盘', href: '#' },
-      { name: '迅雷网盘', href: '#' },
-      { name: '115网盘', href: '#' },
-      { name: '天翼网盘', href: '#' },
-      { name: 'UC网盘', href: '#' },
-    ],
-  },
-  {
-    name: '视频下载',
-    description: '视频分辨率/类型选择',
-    items: [
-      { name: '4K', href: '#' },
-      { name: '1080P', href: '#' },
-      { name: '蓝光', href: '#' },
-      { name: '高清', href: '#' },
-    ],
-  },
-];
-
 export default function FilterPopup() {
+  const { categories } = useDirectory();
   const [isOpen, setIsOpen] = useState(false);
+
+  const filterCategories = useMemo<FilterCategory[]>(() => {
+    const staticGroups: FilterCategory[] = [
+      {
+        name: 'Next标签',
+        description: '你的观看喜好/标签',
+        items: [
+          { name: 'Next推荐', href: '#' },
+          { name: '弹幕多', href: '#' },
+          { name: '4K画质', href: '#' },
+          { name: '高清线路多', href: '#' },
+          { name: '可缓存', href: '#' },
+        ],
+      },
+      {
+        name: '分类',
+        description: '需要哪类的网址/APP',
+        items: categories.map((category) => ({
+          name: category.title,
+          href: `#${category.slug}`,
+        })),
+      },
+      {
+        name: '系统/设备',
+        description: '在什么设备/系统中使用',
+        items: [
+          { name: 'Android', href: '#' },
+          { name: 'iOS', href: '#' },
+          { name: 'Windows', href: '#' },
+          { name: 'macOS', href: '#' },
+          { name: 'Linux', href: '#' },
+          { name: '浏览器', href: '#' },
+          { name: '电视', href: '#' },
+          { name: '车机', href: '#' },
+        ],
+      },
+      {
+        name: 'APP接口',
+        description: '视频/音乐接口',
+        items: [
+          { name: '影视仓', href: '#' },
+          { name: 'TVbox', href: '#' },
+          { name: 'ZYFun', href: '#' },
+          { name: '洛雪音乐', href: '#' },
+          { name: 'Musicfree', href: '#' },
+          { name: 'IPTV', href: '#' },
+        ],
+      },
+      {
+        name: '下载方式',
+        description: '常用的下载渠道',
+        items: [
+          { name: '直链下载', href: '#' },
+          { name: '迅雷下载', href: '#' },
+          { name: '夸克网盘', href: '#' },
+          { name: '百度网盘', href: '#' },
+          { name: '阿里云盘', href: '#' },
+          { name: '迅雷网盘', href: '#' },
+          { name: '115网盘', href: '#' },
+          { name: '天翼网盘', href: '#' },
+          { name: 'UC网盘', href: '#' },
+        ],
+      },
+      {
+        name: '视频下载',
+        description: '视频分辨率/类型选择',
+        items: [
+          { name: '4K', href: '#' },
+          { name: '1080P', href: '#' },
+          { name: '蓝光', href: '#' },
+          { name: '高清', href: '#' },
+        ],
+      },
+    ];
+    return staticGroups;
+  }, [categories]);
 
   return (
     <div className="relative inline-flex">

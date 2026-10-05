@@ -1,34 +1,11 @@
 import Link from 'next/link';
-import { friendLinks, couponLinks } from '@/data/resources';
+import { friendLinks } from '@/data/resources';
 import styles from './styles.module.css';
 
 export default function Footer() {
   return (
     <footer className="max-w-[1400px] mx-auto py-4 px-6 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 mt-8">
       <div className="max-w-[1400px] mx-auto px-6 py-6 rounded-xl bg-white">
-        {/* 优惠券区域 */}
-        <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-base">🎁</span>
-            <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">省钱助手</h3>
-            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700 ml-3"></div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            {couponLinks.slice(0, 10).map((link) => (
-              <Link
-                key={link.id}
-                href={link.url}
-                className="flex flex-col items-center gap-1 p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 rounded-xl hover:shadow-sm transition-shadow"
-                target="_blank"
-              >
-                <span className="text-xl">{link.icon}</span>
-                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{link.name}</span>
-                <span className="text-[10px] text-gray-500 dark:text-gray-400">{link.description}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-
         {/* 友情链接 */}
         <div className="mb-4">
           <div className="flex items-center gap-2 mb-3">

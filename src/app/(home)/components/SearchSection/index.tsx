@@ -4,16 +4,16 @@ import { useState } from 'react';
 import styles from './styles.module.css';
 
 export default function SearchSection() {
-  const [activeTab, setActiveTab] = useState('影视搜索');
+  const [activeTab, setActiveTab] = useState('商家搜索');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSource, setSelectedSource] = useState('豆瓣');
+  const [selectedSource, setSelectedSource] = useState('相关');
   const [isFocused, setIsFocused] = useState(false);
 
-  const sources = ['豆瓣', 'IMDb', 'TMDB'];
+  const sources = ['相关', '推荐', '最新'];
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      window.open(`https://movie.douban.com/subject_search?search_text=${encodeURIComponent(searchQuery)}`, '_blank');
+      window.open(`/search?q=${encodeURIComponent(searchQuery.trim())}`, '_blank');
     }
   };
 
@@ -22,7 +22,7 @@ export default function SearchSection() {
       <div className="max-w-3xl mx-auto">
         {/* Tab切换 - 下划线动画 */}
         <div className="flex justify-center gap-8 mb-2">
-          {['影视搜索', '影片资料'].map((tab) => (
+          {['商家搜索', '商家分类'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -52,7 +52,7 @@ export default function SearchSection() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="输入你想查询资料的影片、导演、演员、编剧的名称"
+              placeholder="输入你想查询的商家名称、描述或标签"
               className="flex-1 px-2 py-1 text-sm focus:outline-none bg-transparent text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
               onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               onFocus={() => setIsFocused(true)}

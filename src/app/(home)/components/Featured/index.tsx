@@ -3,19 +3,11 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { featuredRecommendations } from '@/data/resources';
-
-const platformIcons: Record<string, string> = {
-  'iOS': '🍎',
-  '安卓': '🤖',
-  'Android': '🤖',
-  'Windows': '🪟',
-  'macOS': '🍎',
-  'Linux': '🐧',
-};
+import { useDirectory } from '@/components/DirectoryProvider';
 
 export default function Featured() {
-  const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
+  const { featured } = useDirectory();
+  const [hoveredCardId, setHoveredCardId] = useState<number | null>(null);
 
   return (
     <section className="py-4 px-6 max-w-[1400px] mx-auto">
@@ -32,21 +24,13 @@ export default function Featured() {
           target="_blank"
         >
           <span>💖</span>
-          <span>必备：AineNext APP</span>
-        </Link>
-        <Link
-          href=""
-          className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-medium ml-2 hover:shadow-lg hover:scale-105 transition-all duration-200"
-          target="_blank"
-        >
-          <span>💰</span>
-          <span>超值流量卡</span>
+          <span>必备：APP</span>
         </Link>
       </div>
 
       {/* 推荐卡片网格 */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        {featuredRecommendations.map((item) => (
+        {featured.map((item) => (
           <Link
             key={item.id}
             href={`/detail/${item.id}`}
@@ -62,8 +46,8 @@ export default function Featured() {
               <div className={`relative w-10 h-10 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-700 flex-shrink-0 ${hoveredCardId === item.id ? 'animate-jumps' : ''
                 }`}>
                 <Image
-                  src={item.icon}
-                  alt={item.name}
+                  src={item.logo?.full_url || '/icons/favicon.png'}
+                  alt={item.title}
                   width={40}
                   height={40}
                   className="object-cover"
@@ -73,20 +57,12 @@ export default function Featured() {
 
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium text-gray-800 dark:text-gray-200 text-sm truncate group-hover:text-blue-500 transition-colors">
-                  {item.name}
+                  {item.title}
                 </h3>
                 {item.description && (
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{item.description}</p>
                 )}
               </div>
-
-              {/* 小箭头 */}
-              {/* <span className="w-4 h-4">
-                <svg className="text-gray-300 dark:text-gray-600 group-hover:text-blue-400 transition-colors flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </span> */}
-
             </div>
           </Link>
         ))}
