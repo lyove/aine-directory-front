@@ -1,0 +1,58 @@
+.categoryTabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin-bottom: 16px !important;
+}
+
+.tabButton {
+  position: relative !important;
+  padding: 2px 20px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #666 !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  line-height: 1.8 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  z-index: 1 !important;
+  overflow: visible !important;
+}
+
+.tabButton.active {
+  color: #333 !important;
+}
+
+.tabButton.active::after,
+.tabButton.active:hover::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) skewX(-24deg) !important;
+  left: 8px !important;
+  right: 0 !important;
+  height: 20px !important;
+  border-radius: 6px !important;
+  background: linear-gradient(to right, rgba(255,200,40,1) 0%, rgba(255,214,62,0.9) 50%, rgba(255,255,255,0) 100%) !important;
+  z-index: -1 !important;
+}
+
+.tabButton:hover {
+  color: #333 !important;
+}
+
+.tabButton:hover::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) skewX(-24deg) !important;
+  left: 8px !important;
+  right: 0 !important;
+  height: 20px !important;
+  border-radius: 6px !important;
+  background: linear-gradient(to right, rgba(255,200,40,1) 0%, rgba(255,214,62,0.9) 50%, rgba(255,255,255,0) 100%) !important;
+  z-index: -1 !important;
+}
